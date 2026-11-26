@@ -60,3 +60,13 @@ The crash is queued after the response completes; if delivery is interrupted, th
 ## Private hosted comparisons (no crash or background workloads)
 
 For an access-restricted deployment, first make **both** apps private (for example, App Service private endpoints or access restrictions with public access denied) and ensure Main can reach the private WebApi hostname. Then set `Lab__EnablePrivateHostedReports=true` on **both** apps and configure Main's `WebApi__BaseUrl` to the private API base URL, ending in `/`. Leave `Lab__Enabled`, `Lab__IsolatedLocalHosting`, and `Lab__EnableCrash` off. This setting serves only the app/SQL/HTTP comparison menu and GET comparisons in Main and `GET /api/report` in WebApi; `/health` remains available. The hosted slow variants retain their original single pass; they are not stretched to five seconds. The switch is not authentication: the private ingress configuration is mandatory. The request exception, background workload controls, and process termination are not available in hosted report mode. Crash is never supported on Azure App Service.
+
+### GitHub Actions deployment
+
+The workflow deploys Main to `AspNetCorePerfMain` on pushes to `master`; it does not deploy WebApi or configure private ingress. In the GitHub environment `AspNetCorePerfMain_Env` (or as repository Actions secrets accessible to it), configure:
+
+- `AspNetCorePerfMain_CLIENT_ID_D48D`: the Azure application or user-assigned managed identity client ID.
+- `AspNetCorePerfMain_TENANT_ID_D48D`: the Microsoft Entra tenant ID.
+- `AspNetCorePerfMain_SUBSCRIPTION_ID_D48D`: the Azure subscription ID containing the web app.
+
+If these values were stored as Actions variables, move them to Actions secrets with the same names. Configure a federated identity credential on that Azure identity with issuer `https://token.actions.githubusercontent.com`, subject `repo:vcskiran85/AspNetCorePerf1:environment:AspNetCorePerfMain_Env`, and audience `api://AzureADTokenExchange`. Grant the identity appropriate deployment access to the web app. See [Azure Login's OIDC setup](https://github.com/Azure/login#login-with-openid-connect-oidc-recommended). The workflow cannot authenticate until these GitHub and Azure settings are in place.

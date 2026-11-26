@@ -45,12 +45,24 @@ jobs:
       with:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+    - name: Validate Azure login configuration
+      shell: pwsh
+      env:
+        AspNetCorePerfMain_CLIENT_ID_D48D: ${{ secrets.AspNetCorePerfMain_CLIENT_ID_D48D }}
+        AspNetCorePerfMain_TENANT_ID_D48D: ${{ secrets.AspNetCorePerfMain_TENANT_ID_D48D }}
+        AspNetCorePerfMain_SUBSCRIPTION_ID_D48D: ${{ secrets.AspNetCorePerfMain_SUBSCRIPTION_ID_D48D }}
+      run: |
+        $names = 'AspNetCorePerfMain_CLIENT_ID_D48D', 'AspNetCorePerfMain_TENANT_ID_D48D', 'AspNetCorePerfMain_SUBSCRIPTION_ID_D48D'
+        $missing = @($names | Where-Object { [string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($_)) })
+        if ($missing.Count -gt 0) {
+          throw "Configure these GitHub Actions secrets for AspNetCorePerfMain_Env: $($missing -join ', ')"
+        }
     - name: Azure Login
       uses: azure/login@v2
       with:
-        client-id: ${{ vars.AspNetCorePerfMain_CLIENT_ID_D48D }}
-        tenant-id: ${{ vars.AspNetCorePerfMain_TENANT_ID_D48D }}
-        subscription-id: ${{ vars.AspNetCorePerfMain_SUBSCRIPTION_ID_D48D }}
+        client-id: ${{ secrets.AspNetCorePerfMain_CLIENT_ID_D48D }}
+        tenant-id: ${{ secrets.AspNetCorePerfMain_TENANT_ID_D48D }}
+        subscription-id: ${{ secrets.AspNetCorePerfMain_SUBSCRIPTION_ID_D48D }}
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
