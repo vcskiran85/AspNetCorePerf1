@@ -1,0 +1,12 @@
+@model LabWorkloadStatus
+<dl class="metrics">
+    <dt>Process ID</dt><dd data-field="pid">@Model.Pid</dd>
+    <dt>CPU target</dt><dd data-field="cpuTarget">@($"{Model.TargetCpuPercent}% across {Model.CpuWorkers} workers{(Model.CpuStopping ? " — stopping" : "")}")</dd>
+    <dt>Measured process CPU</dt><dd data-field="cpuSample">@(Model.MeasuredProcessCpuPercent?.ToString("F2") is string sample ? sample + "%" : "Not yet available")</dd>
+    <dt>CPU idle time remaining</dt><dd data-field="cpuTime">@Math.Ceiling(Model.CpuSecondsRemaining) s</dd>
+    <dt>Managed bytes</dt><dd data-field="managed">@Model.ManagedBytes.ToString("N0")</dd>
+    <dt>Native bytes</dt><dd data-field="native">@Model.NativeBytes.ToString("N0")</dd>
+    <dt>Total / cap (bytes)</dt><dd data-field="memoryTotal">@Model.RetainedBytes.ToString("N0") / @Model.MemoryCapBytes.ToString("N0")</dd>
+    <dt>Memory idle time remaining</dt><dd data-field="memoryTime">@Math.Ceiling(Model.MemorySecondsRemaining) s</dd>
+    <dt>Memory status</dt><dd data-field="memoryProgress">@(Model.MemoryAllocating ? (Model.Stopping ? "Cancelling allocation…" : "Allocating and touching 500,000,000 bytes…") : Model.MemoryNotice ?? "Idle")</dd>
+</dl>

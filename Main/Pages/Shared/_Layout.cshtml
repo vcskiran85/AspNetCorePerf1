@@ -1,0 +1,65 @@
+@inject LabAccess Access
+@inject LabWorkloads Workloads
+@{
+    var local = Access.LabAllowed(Context);
+    var reports = local || Access.HostedReportsAllowed();
+}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] | ASP.NET Core performance lab</title>
+    <link rel="stylesheet" href="~/lab.css" asp-append-version="true" />
+    <script src="~/lab.js" asp-append-version="true" defer></script>
+</head>
+<body>
+    <header class="masthead">
+        <div class="wrap">
+            <h1>ASP.NET Core performance lab</h1>
+            <nav class="menu" aria-label="Lab scenarios">
+                <a asp-page="/Index">Home</a>
+                @if (local)
+                {
+                    @* The Form Tag Helper writes the POST URL and a hidden antiforgery token. Razor Pages checks the token before running the handler. *@
+                    <form method="post" asp-page="/ManagedMemory"><button type="submit">Managed memory</button></form>
+                    <form method="post" asp-page="/NativeMemory"><button type="submit">Native memory</button></form>
+                    <form method="post" asp-page="/HighCpu"><button type="submit">CPU +10 points</button></form>
+                    <form method="post" asp-page="/Exception"><button type="submit">Exception</button></form>
+                }
+                @if (reports)
+                {
+                    <a asp-page="/AppReport" asp-route-mode="Slow">App slow</a>
+                    <a asp-page="/SqlReport" asp-route-mode="Slow">SQL slow</a>
+                    <a asp-page="/HttpReport" asp-route-mode="Slow">HTTP slow</a>
+                }
+                @if (local)
+                {
+                    <a asp-page="/Crash" asp-route-kind="">Crash</a>
+                    <a asp-page="/Status">Workload status</a>
+                    <form method="post" asp-page="/Stop"><button type="submit">Stop workloads</button></form>
+                }
+                <a asp-page="/Health">Health</a>
+            </nav>
+        </div>
+    </header>
+    <main class="wrap dashboard">
+        @if (local)
+        {
+            @* Render the first snapshot on the server. lab.js polls the JSON URL, refreshing faster while work is active and keeping the last snapshot if a poll fails. *@
+            <aside class="panel" id="live-workloads" data-status-url="@Url.RouteUrl("StatusJson")" aria-labelledby="workload-heading">
+                <h2 id="workload-heading">Live workloads</h2>
+                <partial name="_WorkloadStatus" model="Workloads.GetStatus()" />
+                <p id="poll-note" role="status"></p>
+            </aside>
+        }
+        <section class="panel result" id="result" aria-labelledby="page-heading">
+            <h2 id="page-heading">@ViewData["Title"]</h2>
+            @RenderBody()
+        </section>
+    </main>
+    <div id="pending" class="loading" role="status" hidden>
+        <span class="loading-message"><span class="spinner" aria-hidden="true"></span>Working…</span>
+    </div>
+</body>
+</html>

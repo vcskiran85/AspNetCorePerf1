@@ -1,0 +1,7 @@
+@page "/Status/Stop"
+@model StopModel
+@{
+    ViewData["Title"] = "Workloads stopped";
+}
+<p>CPU work was stopped and retained allocations were released. Managed heap and working-set counters may not fall immediately.</p>
+<p><a asp-page="/Status">View workload status</a></p>

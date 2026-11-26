@@ -1,0 +1,18 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+@if (Model.Local)
+{
+    <p>Choose a scenario from the top menu. Memory, CPU, and Exception run immediately when selected. Crash opens separate confirmation controls.</p>
+    <p>Use <strong>Stop workloads</strong> to cancel background CPU and release retained memory. <strong>Health</strong> verifies the worker is responding.</p>
+}
+else if (Model.Hosted)
+{
+    <p>Use the top menu to run an App, SQL, or HTTP report. Background and crash actions are not available in hosted report mode.</p>
+}
+else
+{
+    <p>Lab actions are disabled for this connection. Health is still available.</p>
+}

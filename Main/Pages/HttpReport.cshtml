@@ -1,0 +1,8 @@
+@page "/Http/{mode}"
+@model HttpReportModel
+@{
+    ViewData["Title"] = $"Outbound HTTP report — {Model.Mode}";
+}
+<p>@(Model.Slow ? "Each pass sends twelve sequential GETs to WebApi and aggregates the detail pages." : "Each pass sends one GET to WebApi for a precomputed aggregate.")</p>
+<partial name="_ReportResult" model="Model" />
+<p><a asp-page="/HttpReport" asp-route-mode="@(Model.Slow ? "Fast" : "Slow")">Run @(Model.Slow ? "fast" : "slow") HTTP report</a></p>

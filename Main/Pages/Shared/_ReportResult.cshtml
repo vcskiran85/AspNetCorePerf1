@@ -1,0 +1,25 @@
+@model ReportPageModel
+@if (Model.Error is string error)
+{
+    <p class="outcome" role="status">@error</p>
+}
+else if (Model.Passes > 0)
+{
+    <dl class="metrics">
+        <dt>Elapsed time</dt><dd>@Model.ElapsedSeconds.ToString("0.00") s</dd>
+        <dt>Completed passes</dt><dd>@Model.Passes</dd>
+        @if (Model.HttpRequests > 0)
+        {
+            <dt>Total WebApi GETs</dt><dd>@Model.HttpRequests</dd>
+        }
+    </dl>
+    @if (Model.ResultJson is string json)
+    {
+        <p>Result from the final pass:</p>
+        <pre>@json</pre>
+    }
+    else
+    {
+        <p>Event 125001 was not found. Check the sample seed.</p>
+    }
+}

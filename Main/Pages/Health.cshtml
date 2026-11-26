@@ -1,0 +1,11 @@
+@page "/Health/View"
+@model HealthModel
+@{
+    ViewData["Title"] = "Health";
+}
+<dl class="metrics">
+    <dt>Application</dt><dd>Main</dd>
+    <dt>Status</dt><dd>Responding</dd>
+    <dt>Process ID</dt><dd>@Model.Pid</dd>
+</dl>
+<p><a href="@Url.RouteUrl("HealthJson")">Machine-readable health JSON</a></p>

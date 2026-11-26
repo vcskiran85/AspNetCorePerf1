@@ -1,0 +1,14 @@
+@page
+@model RequestFailedModel
+@{
+    ViewData["Title"] = Model.Intentional ? "Request exception — HTTP 500" : "Request failed — HTTP 500";
+}
+@if (Model.Intentional)
+{
+    <p class="outcome">The intended request-scoped exception was thrown and logged. This action does not terminate Main.</p>
+}
+else
+{
+    <p>The request failed. See Main's logs for details.</p>
+}
+<p><a asp-page="/Health">Check Health and verify the worker PID</a>.</p>

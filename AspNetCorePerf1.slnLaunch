@@ -1,0 +1,9 @@
+[
+  {
+    "Name": "Main + WebApi (Kestrel)",
+    "Projects": [
+      { "Path": "WebApi\\WebApi.csproj", "Action": "Start", "DebugTarget": "WebApi" },
+      { "Path": "Main\\Main.csproj", "Action": "Start", "DebugTarget": "Main" }
+    ]
+  }
+]

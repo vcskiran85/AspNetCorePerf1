@@ -1,0 +1,36 @@
+@page "/Crash/{kind?}"
+@model CrashModel
+@{
+    ViewData["Title"] = "Crash — process termination";
+}
+@if (Model.Outcome is string outcome)
+{
+    <p class="outcome" role="status">@outcome</p>
+}
+@if (!Model.Enabled)
+{
+    <p>Crash demonstrations are disabled. They require explicit opt-in on an isolated Windows lab host.</p>
+}
+else if (!Model.Queued)
+{
+    <p>These actions terminate only the isolated Main worker. Verify the current PID in <a asp-page="/Health">Health</a> and restart Main after each test.</p>
+    <p>Type <strong>TERMINATE LAB PROCESS</strong> in the field for the selected action before submitting.</p>
+    <div class="crash-options">
+        <form method="post" asp-page="/Crash" asp-route-kind="thread">
+            <label for="confirm-thread">Confirmation: unhandled background exception</label>
+            <input id="confirm-thread" name="confirmation" autocomplete="off" required />
+            <button type="submit">Crash: background exception</button>
+        </form>
+        <form method="post" asp-page="/Crash" asp-route-kind="stack">
+            <label for="confirm-stack">Confirmation: stack overflow</label>
+            <input id="confirm-stack" name="confirmation" autocomplete="off" required />
+            <button type="submit">Crash: stack overflow</button>
+        </form>
+        <form method="post" asp-page="/Crash" asp-route-kind="native-failfast">
+            <label for="confirm-native">Confirmation: Windows fail-fast</label>
+            <input id="confirm-native" name="confirmation" autocomplete="off" required />
+            <button type="submit">Crash: Windows fail-fast</button>
+            <p>This does not corrupt the native heap.</p>
+        </form>
+    </div>
+}

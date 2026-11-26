@@ -1,0 +1,12 @@
+@page "/HighCPU"
+@model HighCpuModel
+@{
+    ViewData["Title"] = "High CPU";
+}
+@if (Model.Outcome is string outcome)
+{
+    <p class="outcome" role="status">@outcome</p>
+}
+<p>Each submission raises the aggregate CPU target by 10 percentage points, up to 100%, across the logical processors available to Main. The measured CPU sample can differ from the target.</p>
+<p>CPU work ends with Stop or after 60 seconds without a CPU step.</p>
+<form method="post" asp-page="/HighCpu"><button type="submit">Add 10 CPU percentage points</button></form>

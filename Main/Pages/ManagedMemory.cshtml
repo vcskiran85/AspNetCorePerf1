@@ -1,0 +1,12 @@
+@page "/HighMemoryManaged"
+@model ManagedMemoryModel
+@{
+    ViewData["Title"] = "Managed memory";
+}
+@if (Model.Outcome is string outcome)
+{
+    <p class="outcome" role="status">@outcome</p>
+}
+<p>Allocate and touch a 500,000,000-byte managed array. Observe GC heap and large-object-heap counters.</p>
+<p>Managed and native allocations share a 10,000,000,000-byte cap. Memory is released with Stop or after two minutes of memory inactivity.</p>
+<form method="post" asp-page="/ManagedMemory"><button type="submit">Add 500,000,000 managed bytes</button></form>

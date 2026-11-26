@@ -1,0 +1,8 @@
+@page "/Sql/{mode}"
+@model SqlReportModel
+@{
+    ViewData["Title"] = $"SQL Server report — {Model.Mode}";
+}
+<p>@(Model.Slow ? "The query converts the EventId column to text, generally requiring a scan." : "The query uses a typed EventId parameter so SQL Server can seek the primary key.")</p>
+<partial name="_ReportResult" model="Model" />
+<p><a asp-page="/SqlReport" asp-route-mode="@(Model.Slow ? "Fast" : "Slow")">Run @(Model.Slow ? "fast" : "slow") SQL report</a></p>

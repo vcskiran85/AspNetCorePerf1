@@ -1,0 +1,7 @@
+@page
+@model ExceptionModel
+@{
+    ViewData["Title"] = "Request exception";
+}
+<p>Throw an exception in one request. Its HTTP 500 is logged, but the worker continues running.</p>
+<form method="post" asp-page="/Exception"><button type="submit">Throw a request exception</button></form>

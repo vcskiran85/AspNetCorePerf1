@@ -1,0 +1,8 @@
+@page "/App/{mode}"
+@model AppReportModel
+@{
+    ViewData["Title"] = $"Application report — {Model.Mode}";
+}
+<p>@(Model.Slow ? "The application scans its sales once per customer." : "The application aggregates sales into indexed customer totals in a single pass.")</p>
+<partial name="_ReportResult" model="Model" />
+<p><a asp-page="/AppReport" asp-route-mode="@(Model.Slow ? "Fast" : "Slow")">Run @(Model.Slow ? "fast" : "slow") application report</a></p>

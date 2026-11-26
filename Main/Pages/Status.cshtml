@@ -1,0 +1,8 @@
+@page
+@model StatusModel
+@{
+    ViewData["Title"] = "Workload status";
+}
+<p>Live workloads shows CPU targets and samples, memory retained, and idle time remaining. Status refreshes automatically with JavaScript; reload this page manually otherwise.</p>
+<p><a href="@Url.RouteUrl("StatusJson")">Machine-readable workload status</a></p>
+<form method="post" asp-page="/Stop"><button type="submit">Stop workloads and release memory</button></form>
