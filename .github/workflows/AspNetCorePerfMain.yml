@@ -40,6 +40,18 @@ jobs:
     runs-on: windows-latest
     needs: build
     steps:
+    - name: Validate Azure login configuration
+      shell: pwsh
+      env:
+        AZURE_CLIENT_ID: ${{ vars.AspNetCorePerfMain_CLIENT_ID_D48D || secrets.AspNetCorePerfMain_CLIENT_ID_D48D }}
+        AZURE_TENANT_ID: ${{ vars.AspNetCorePerfMain_TENANT_ID_D48D }}
+        AZURE_SUBSCRIPTION_ID: ${{ vars.AspNetCorePerfMain_SUBSCRIPTION_ID_D48D }}
+      run: |
+        foreach ($name in @('AZURE_CLIENT_ID', 'AZURE_TENANT_ID', 'AZURE_SUBSCRIPTION_ID')) {
+          if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name))) {
+            throw "$name is missing. Configure the Azure OIDC settings described in README.md."
+          }
+        }
     - name: Download artifact from build job
       uses: actions/download-artifact@v4
       with:
@@ -48,7 +60,7 @@ jobs:
     - name: Azure Login
       uses: azure/login@v2
       with:
-        client-id: ${{ vars.AspNetCorePerfMain_CLIENT_ID_D48D }}
+        client-id: ${{ vars.AspNetCorePerfMain_CLIENT_ID_D48D || secrets.AspNetCorePerfMain_CLIENT_ID_D48D }}
         tenant-id: ${{ vars.AspNetCorePerfMain_TENANT_ID_D48D }}
         subscription-id: ${{ vars.AspNetCorePerfMain_SUBSCRIPTION_ID_D48D }}
     - name: Deploy to Azure WebApp

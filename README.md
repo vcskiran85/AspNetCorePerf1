@@ -60,3 +60,13 @@ The crash is queued after the response completes; if delivery is interrupted, th
 ## Private hosted comparisons (no crash or background workloads)
 
 For an access-restricted deployment, first make **both** apps private (for example, App Service private endpoints or access restrictions with public access denied) and ensure Main can reach the private WebApi hostname. Then set `Lab__EnablePrivateHostedReports=true` on **both** apps and configure Main's `WebApi__BaseUrl` to the private API base URL, ending in `/`. Leave `Lab__Enabled`, `Lab__IsolatedLocalHosting`, and `Lab__EnableCrash` off. This setting serves only the app/SQL/HTTP comparison menu and GET comparisons in Main and `GET /api/report` in WebApi; `/health` remains available. The hosted slow variants retain their original single pass; they are not stretched to five seconds. The switch is not authentication: the private ingress configuration is mandatory. The request exception, background workload controls, and process termination are not available in hosted report mode. Crash is never supported on Azure App Service.
+
+### GitHub Actions deployment
+
+The workflow deploys **Main only** to the existing `AspNetCorePerfMain` App Service on pushes to `master`. Before running it:
+
+1. In GitHub Actions repository variables or the `AspNetCorePerfMain_Env` environment variables, set `AspNetCorePerfMain_CLIENT_ID_D48D` to the Azure application's client ID, `AspNetCorePerfMain_TENANT_ID_D48D` to its tenant ID, and `AspNetCorePerfMain_SUBSCRIPTION_ID_D48D` to the target subscription ID. The client ID may instead be stored as an Actions secret of the same name; the variable takes precedence if both are set.
+2. Configure a federated credential on that Azure application or user-assigned managed identity for GitHub's issuer `https://token.actions.githubusercontent.com`, audience `api://AzureADTokenExchange`, and subject `repo:vcskiran85/AspNetCorePerf1:environment:AspNetCorePerfMain_Env`. Grant the identity appropriate deployment access to the target App Service.
+3. Ensure the App Service supports .NET 10 and is access-restricted as described above. Provision and configure WebApi separately if hosted HTTP comparisons are needed.
+
+An empty client ID causes Azure Login to fail before deployment; creating or correcting the GitHub variable or secret and the Azure federated credential is required before rerunning the workflow.
