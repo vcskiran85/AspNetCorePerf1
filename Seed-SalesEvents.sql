@@ -1,8 +1,8 @@
--- Connect directly to an already provisioned, dedicated AspNetCorePerf1 database.
+-- Connect directly to an already provisioned, dedicated AspNetPerfDB database.
 -- For SQL Server Express service or Azure SQL Database; no database DDL.
-IF DB_NAME() <> N'AspNetCorePerf1'
+IF DB_NAME() <> N'AspNetPerfDB'
 BEGIN
-    RAISERROR ('Connect directly to the dedicated AspNetCorePerf1 sample database.', 16, 1);
+    RAISERROR ('Connect directly to the dedicated AspNetPerfDB sample database.', 16, 1);
     RETURN;
 END;
 IF @@TRANCOUNT <> 0 OR (@@OPTIONS & 2) = 2
