@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/AspNetCorePerf1.sln
+/Main/Main.csproj
+/WebApi/WebApi.csproj
