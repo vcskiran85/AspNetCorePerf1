@@ -60,3 +60,13 @@ The crash is queued after the response completes; if delivery is interrupted, th
 ## Private hosted comparisons (no crash or background workloads)
 
 For an access-restricted deployment, first make **both** apps private (for example, App Service private endpoints or access restrictions with public access denied) and ensure Main can reach the private WebApi hostname. Then set `Lab__EnablePrivateHostedReports=true` on **both** apps and configure Main's `WebApi__BaseUrl` to the private API base URL, ending in `/`. Leave `Lab__Enabled`, `Lab__IsolatedLocalHosting`, and `Lab__EnableCrash` off. This setting serves only the app/SQL/HTTP comparison menu and GET comparisons in Main and `GET /api/report` in WebApi; `/health` remains available. The hosted slow variants retain their original single pass; they are not stretched to five seconds. The switch is not authentication: the private ingress configuration is mandatory. The request exception, background workload controls, and process termination are not available in hosted report mode. Crash is never supported on Azure App Service.
+
+### GitHub Actions deployment
+
+The workflow deploys **Main** to the existing `AspNetCorePerfMain` App Service on pushes to `master`; it does not deploy WebApi or configure private access. Before running it, add these Actions variables in the repository settings or the `AspNetCorePerfMain_Env` environment settings:
+
+- `AspNetCorePerfMain_CLIENT_ID_D48D`: application (client) ID of the Azure identity used for deployment.
+- `AspNetCorePerfMain_TENANT_ID_D48D`: its Microsoft Entra tenant ID.
+- `AspNetCorePerfMain_SUBSCRIPTION_ID_D48D`: the subscription ID containing the App Service.
+
+Configure a federated identity credential on that Azure identity with issuer `https://token.actions.githubusercontent.com`, subject `repo:vcskiran85/AspNetCorePerf1:environment:AspNetCorePerfMain_Env`, and audience `api://AzureADTokenExchange`. Grant the identity permission to deploy to the App Service, for example the Website Contributor role scoped to that app. The client ID must identify this configured identity; it cannot be derived from the tenant or subscription ID. After configuring the variables and federation, rerun the workflow.

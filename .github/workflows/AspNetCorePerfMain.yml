@@ -40,6 +40,21 @@ jobs:
     runs-on: windows-latest
     needs: build
     steps:
+    - name: Validate Azure configuration
+      env:
+        AZURE_CLIENT_ID: ${{ vars.AspNetCorePerfMain_CLIENT_ID_D48D }}
+        AZURE_TENANT_ID: ${{ vars.AspNetCorePerfMain_TENANT_ID_D48D }}
+        AZURE_SUBSCRIPTION_ID: ${{ vars.AspNetCorePerfMain_SUBSCRIPTION_ID_D48D }}
+      run: |
+        $missing = @(
+          if ([string]::IsNullOrWhiteSpace($env:AZURE_CLIENT_ID)) { 'AspNetCorePerfMain_CLIENT_ID_D48D' }
+          if ([string]::IsNullOrWhiteSpace($env:AZURE_TENANT_ID)) { 'AspNetCorePerfMain_TENANT_ID_D48D' }
+          if ([string]::IsNullOrWhiteSpace($env:AZURE_SUBSCRIPTION_ID)) { 'AspNetCorePerfMain_SUBSCRIPTION_ID_D48D' }
+        )
+        if ($missing.Count -gt 0) {
+          Write-Error "Missing GitHub Actions variables: $($missing -join ', '). Configure them in the AspNetCorePerfMain_Env environment or repository settings."
+          exit 1
+        }
     - name: Download artifact from build job
       uses: actions/download-artifact@v4
       with:
