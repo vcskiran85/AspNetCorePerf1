@@ -48,9 +48,9 @@ jobs:
     - name: Azure Login
       uses: azure/login@v2
       with:
-        client-id: ${{ vars.AspNetCorePerfMain_CLIENT_ID_D48D }}
-        tenant-id: ${{ vars.AspNetCorePerfMain_TENANT_ID_D48D }}
-        subscription-id: ${{ vars.AspNetCorePerfMain_SUBSCRIPTION_ID_D48D }}
+        client-id: ${{ vars.AspNetCorePerfMain_CLIENT_ID_0D51 }}
+        tenant-id: ${{ vars.AspNetCorePerfMain_TENANT_ID_0D51 }}
+        subscription-id: ${{ vars.AspNetCorePerfMain_SUBSCRIPTION_ID_0D51 }}
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
